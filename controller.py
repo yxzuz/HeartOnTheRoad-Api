@@ -33,9 +33,16 @@ def get_analytic_relation():  # noqa: E501
      # noqa: E501
 
 
-    :rtype: List[InlineResponse2001]
+    :rtype: List[AnalyticRelation]
     """
-    return 'do some magic!'
+    with pool.connection() as conn, conn.cursor() as cs:
+        cs.execute("""
+            SELECT heartrate, currentSpeed/freeFlowSpeed AS ratio
+            FROM HeartOnTheRoad
+            """)
+    result = [models.AnalyticRelation(heartrate,ratio) 
+              for heartrate,ratio in cs.fetchall()]
+    return result
 
 
 def get_heart_rate_trip(trip_id):  # noqa: E501
@@ -105,7 +112,7 @@ def get_trip_details(trip_id):  # noqa: E501
     :param trip_id: 
     :type trip_id: float
 
-    :rtype: InlineResponse2002
+    :rtype: TripDetails
     """
     with pool.connection() as conn, conn.cursor() as cs:
         cs.execute("""
@@ -152,7 +159,7 @@ def get_trip_details(trip_id):  # noqa: E501
         return models.TripDetails(
             record=models.Record(total=total, trafficjam=trafficjam, normal=normal),
             start_time=start_time,
-            duration=duration,
+            duration=duration, # minutes
             min_heartrate=min_heartrate,
             max_heartrate=max_heartrate,
             average_heartrate=average_heartrate
