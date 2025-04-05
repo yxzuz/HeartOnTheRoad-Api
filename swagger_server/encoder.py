@@ -17,5 +17,5 @@ class JSONEncoder(FlaskJSONEncoder):
                 dikt[attr] = value
             return dikt
         elif isinstance(o, datetime.timedelta):  # Handle timedelta objects
-            return o.total_seconds()  # Convert timedelta to seconds
+            return round(o.total_seconds() / 60, 2)  # Convert timedelta to minutes and round
         return super().default(o)  # Use Flask's default method for other types
