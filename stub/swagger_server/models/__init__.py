@@ -3,7 +3,7 @@
 # flake8: noqa
 from __future__ import absolute_import
 # import models into model package
-from swagger_server.models.inline_response200 import InlineResponse200
+from swagger_server.models.analytic_data import InlineResponse200
 from swagger_server.models.analytic_relation import InlineResponse2001
 from swagger_server.models.trip_details import InlineResponse2002
 from swagger_server.models.heart_rate_trip import InlineResponse2003

@@ -22,10 +22,77 @@ def get_analytic_data():  # noqa: E501
      # noqa: E501
 
 
-    :rtype: InlineResponse200
+    :rtype: AnalyticData
     """
-    return 'do some magic!'
 
+    with pool.connection() as conn, conn.cursor() as cs:
+        cs.execute("""
+            WITH record AS (
+                SELECT 
+                    COUNT(*) AS total,  
+                    COUNT(CASE WHEN isTrafficJam = 1 THEN 1 END) AS trafficjam,  
+                    COUNT(CASE WHEN isTrafficJam = 0 THEN 1 END) AS normal,
+                    COUNT(DISTINCT trip_id) AS trip
+                FROM HeartOnTheRoad
+            ),
+            tmp AS (
+                SELECT
+                    TIMESTAMPDIFF(MINUTE, MIN(timeStamp), MAX(timeStamp)) AS duration,  -- Convert to minutes
+                    trip_id
+                FROM HeartOnTheRoad
+                GROUP BY trip_id
+            ),
+            average_duration AS (
+                SELECT 
+                    AVG(duration) AS avg_duration  -- AVG of duration in minutes
+                FROM tmp
+            ),
+            heartrate AS (
+                SELECT 
+                    AVG(heartrate) AS average,
+                    AVG(CASE WHEN isTrafficJam = 1 THEN heartrate END) AS trafficjam,  -- Average heart rate in traffic jam
+                    AVG(CASE WHEN isTrafficJam = 0 THEN heartrate END) AS normal  -- Average heart rate in normal conditions
+                FROM HeartOnTheRoad
+            ),
+            last_timestamp AS (
+                SELECT MAX(timeStamp) AS last_time_stamp
+                FROM HeartOnTheRoad
+            )
+            SELECT 
+                record.total, 
+                record.trafficjam, 
+                record.normal,
+                record.trip,
+                average_duration.avg_duration, 
+                heartrate.average, 
+                heartrate.trafficjam, 
+                heartrate.normal,
+                last_timestamp.last_time_stamp
+            FROM record, average_duration, heartrate, last_timestamp;
+        """)
+
+        row = cs.fetchone()
+        
+    if not row:
+        return None  # No data found
+
+    total, trafficjam, normal, trip, avg_duration, avg_heartrate, trafficjam_heartrate, normal_heartrate, last_time_stamp = row
+    
+    return models.AnalyticData(
+        last_time_stamp=last_time_stamp,  
+        record={
+            "total": total,
+            "trafficjam": trafficjam,
+            "normal": normal,
+            "trip": trip
+        },
+        average_duration=avg_duration,
+        heartrate={
+            "average": avg_heartrate,
+            "trafficjam": trafficjam_heartrate,
+            "normal": normal_heartrate
+        }
+    )
 
 def get_analytic_relation():  # noqa: E501
     """Get heart rate and traffic ratio relation
