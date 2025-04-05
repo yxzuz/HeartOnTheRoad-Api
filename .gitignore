@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Flask / Connexion specific
+instance/
+.werkzeug/
+.werkezug-debugger/
+
+# Configuration & Secrets
+config.py
+.env
+*.log
+
+# Database & Caches
+*.sqlite3
+*.db
+*.db-journal
+migrations/
+__pycache__/
+cache/
+celerybeat-schedule
+
+# Python packaging
+dist/
+build/
+*.egg-info/
+
+# OS-specific files
+.DS_Store
+Thumbs.db

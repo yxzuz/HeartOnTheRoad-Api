@@ -1,0 +1,197 @@
+openapi: 3.0.0
+info:
+  title: HeartOnTheRoad API
+  version: 1.0.0
+servers:
+- url: /heart/v1
+tags:
+  - name: Analytics
+    description: Endpoints for retrieving analytics data
+  - name: Trip
+    description: Endpoints related to trip data
+  - name: HeartRate
+    description: Endpoints for heart rate data
+  - name: Location
+    description: Endpoints for location data
+
+paths:
+  /api/analytic:
+    get:
+      summary: Get analytics data
+      operationId: controller.get_analytic_data
+      tags:
+        - Analytics
+      responses:
+        200:
+          description: Successful retrieval of analytics data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  last_time_stamp:
+                    type: string
+                    format: date-time
+                  record:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                      trafficjam:
+                        type: number
+                      normal:
+                        type: number
+                      trip:
+                        type: number
+                  average_duration:
+                    type: number
+                  heartrate:
+                    type: object
+                    properties:
+                      average:
+                        type: number
+                      trafficjam:
+                        type: number
+                      normal:
+                        type: number
+
+  /api/analytic/relation:
+    get:
+      summary: Get heart rate and traffic ratio relation
+      operationId: controller.get_analytic_relation
+      tags:
+        - Analytics
+      responses:
+        200:
+          description: Successful retrieval of relation data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    heartrate:
+                      type: number
+                    ratio:
+                      type: number
+                      description: Ratio of current speed to free-flow speed
+
+  /api/trip/{trip_id}:
+    get:
+      summary: Get trip details
+      operationId: controller.get_trip_details
+      tags:
+        - Trip
+      parameters:
+        - name: trip_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: Successful retrieval of trip details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  record:
+                    type: object
+                    properties:
+                      total:
+                        type: number
+                      trafficjam:
+                        type: number
+                      normal:
+                        type: number
+                  start_time:
+                    type: string
+                    format: date-time
+                  duration:
+                    type: number
+                    description: Duration in minutes
+                  min_heartrate:
+                    type: number
+                  max_heartrate:
+                    type: number
+                  average_heartrate:
+                    type: number
+
+  /api/heartrate/trip/{trip_id}:
+    get:
+      summary: Get heart rate data for a trip
+      operationId: controller.get_heart_rate_trip
+      tags:
+        - HeartRate
+      parameters:
+        - name: trip_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: Successful retrieval of heart rate data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    time:
+                      type: string
+                      format: date-time
+                    heartrate:
+                      type: number
+
+  /api/location/trip/{trip_id}:
+    get:
+      summary: Get location data for a trip
+      operationId: controller.get_location_trip
+      tags:
+        - Location
+      parameters:
+        - name: trip_id
+          in: path
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: Successful retrieval of location data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    latitude:
+                      type: number
+                    longitude:
+                      type: number
+                    currentSpeed:
+                      type: number
+                    freeFlowSpeed:
+                      type: number
+
+  /api/trip:
+    get:
+      summary: Get number of trips
+      operationId: controller.get_number_of_trips
+      tags:
+        - Trip
+      responses:
+        200:
+          description: Successful retrieval of trip count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number_of_trip:
+                    type: number
+
