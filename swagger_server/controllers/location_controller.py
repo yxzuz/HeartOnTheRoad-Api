@@ -16,3 +16,15 @@ def get_location_trip(trip_id):  # noqa: E501
     :rtype: List[InlineResponse2004]
     """
     return 'do some magic!'
+
+def get_speed_by_traffic(is_traffic_jam):  # noqa: E501
+    """Get current speed data filtered by traffic condition
+
+     # noqa: E501
+
+    :param is_traffic_jam: 
+    :type is_traffic_jam: bool
+
+    :rtype: List[InlineResponse2008]
+    """
+    return 'do some magic!'

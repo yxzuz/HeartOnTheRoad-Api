@@ -3,7 +3,7 @@ info:
   title: HeartOnTheRoad API
   version: 1.0.0
 servers:
-- url: /heart/v1
+  - url: /heart/v1
 tags:
   - name: Analytics
     description: Endpoints for retrieving analytics data
@@ -13,6 +13,8 @@ tags:
     description: Endpoints for heart rate data
   - name: Location
     description: Endpoints for location data
+  - name: Traffic
+    description: Endpoints for traffic and heartrate correlation
 
 paths:
   /api/analytic:
@@ -195,3 +197,93 @@ paths:
                   number_of_trip:
                     type: number
 
+
+
+  /api/traffic/{isTrafficJam}:
+    get:
+      summary: Get summary statistics for heart rate and traffic by traffic condition
+      operationId: controller.get_traffic_summary
+      tags:
+        - Traffic
+      parameters:
+        - name: isTrafficJam
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: Summary of heart rate and traffic data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  number_of_records:
+                    type: number
+                  max_heartrate:
+                    type: number
+                  min_heartrate:
+                    type: number
+                  average_heartrate:
+                    type: number
+                  average_speed:
+                    type: number
+                  average_travel_time:
+                    type: number
+
+  /api/heartrate/traffic/{isTrafficJam}:
+    get:
+      summary: Get timestamped heart rate data filtered by traffic condition
+      operationId: controller.get_heartrate_by_traffic
+      tags:
+        - HeartRate
+      parameters:
+        - name: isTrafficJam
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: List of heart rate entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      format: date-time
+                    heartrate:
+                      type: number
+
+  /api/speed/traffic/{isTrafficJam}:
+    get:
+      summary: Get current speed data filtered by traffic condition
+      operationId: controller.get_speed_by_traffic
+      tags:
+        - Location
+      parameters:
+        - name: isTrafficJam
+          in: path
+          required: true
+          schema:
+            type: boolean
+      responses:
+        200:
+          description: List of current speed entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    timestamp:
+                      type: string
+                      format: date-time
+                    currentSpeed:
+                      type: number

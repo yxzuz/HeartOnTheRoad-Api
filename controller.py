@@ -231,3 +231,92 @@ def get_trip_details(trip_id):  # noqa: E501
             max_heartrate=max_heartrate,
             average_heartrate=average_heartrate
         )
+
+def get_traffic_summary(is_traffic_jam):  # noqa: E501
+    """Get summary statistics for heart rate and traffic by traffic condition
+
+    :param is_traffic_jam: 
+    :type is_traffic_jam: bool
+
+    :rtype: InlineResponse2006
+    """
+    with pool.connection() as conn, conn.cursor() as cs:
+        cs.execute("""
+            WITH filtered_records AS (
+                SELECT * 
+                FROM HeartOnTheRoad 
+                WHERE isTrafficJam = %s
+            ),
+            trip_durations AS (
+                SELECT 
+                    trip_id,
+                    TIMESTAMPDIFF(MINUTE, MIN(timeStamp), MAX(timeStamp)) AS duration
+                FROM filtered_records
+                GROUP BY trip_id
+            ),
+            stats AS (
+                SELECT 
+                    COUNT(*) AS total_records,
+                    MIN(heartrate) AS min_heartrate,
+                    MAX(heartrate) AS max_heartrate,
+                    AVG(heartrate) AS average_heartrate,
+                    AVG(currentSpeed) AS average_currentspeed,
+                    AVG(duration) AS average_travel_time
+                FROM filtered_records fr
+                JOIN trip_durations td ON fr.trip_id = td.trip_id
+            )
+            SELECT * FROM stats;
+        """, [is_traffic_jam])
+        row = cs.fetchone()
+
+    if not row:
+        return None 
+
+    total_records, min_heartrate, max_heartrate, average_heartrate, average_currentspeed, average_travel_time = row
+
+    return models.TrafficSummary(
+        number_of_records=total_records,
+        min_heartrate=min_heartrate,
+        max_heartrate=max_heartrate,
+        average_heartrate=average_heartrate,
+        average_speed=average_currentspeed,
+        average_travel_time=average_travel_time
+    )
+
+def get_heartrate_by_traffic(is_traffic_jam):  # noqa: E501
+    """Get timestamped heart rate data filtered by traffic condition
+
+     # noqa: E501
+
+    :param is_traffic_jam: 
+    :type is_traffic_jam: bool
+
+    :rtype: List[HeartRateByTraffic]
+    """
+    with pool.connection() as conn, conn.cursor() as cs:
+        cs.execute("""
+            SELECT timeStamp, heartrate FROM HeartOnTheRoad
+            WHERE isTrafficJam = %s
+            """, [is_traffic_jam])
+    result = [models.HeartRateByTraffic(timeStamp, heartrate)
+              for timeStamp, heartrate in cs.fetchall()]
+    return result
+
+def get_speed_by_traffic(is_traffic_jam):  # noqa: E501
+    """Get current speed data filtered by traffic condition
+
+     # noqa: E501
+
+    :param is_traffic_jam: 
+    :type is_traffic_jam: bool
+
+    :rtype: List[SpeedByTraffic]
+    """
+    with pool.connection() as conn, conn.cursor() as cs:
+        cs.execute("""
+            SELECT timeStamp, currentSpeed FROM HeartOnTheRoad
+            WHERE isTrafficJam = %s
+            """, [is_traffic_jam])
+    result = [models.SpeedByTraffic(timeStamp, currentSpeed)
+              for timeStamp, currentSpeed in cs.fetchall()]
+    return result
