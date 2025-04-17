@@ -1,6 +1,7 @@
 from swagger_server import models
 import sys
 from flask import abort
+from werkzeug.exceptions import BadRequest
 import pymysql
 from dbutils.pooled_db import PooledDB
 from config import OPENAPI_STUB_DIR, DB_HOST, DB_USER, DB_PASSWD, DB_NAME
@@ -100,6 +101,8 @@ class HeartOnTheRoadAnalytics:
     class Trip:
         @classmethod
         def get_heart_rate_trip(cls, trip_id):
+            if not isinstance(trip_id, (int, float)) or trip_id <= 0 or trip_id >= 29:
+                raise BadRequest("Invalid trip_id: must be a positive number.")
             with pool.connection() as conn, conn.cursor() as cs:
                 cs.execute("""
                     SELECT timestamp, heartrate
@@ -110,6 +113,8 @@ class HeartOnTheRoadAnalytics:
 
         @classmethod
         def get_location_trip(cls, trip_id):
+            if not isinstance(trip_id, (int, float)) or trip_id <= 0 or trip_id >= 29:
+                raise BadRequest("Invalid trip_id: must be a positive number.")
             with pool.connection() as conn, conn.cursor() as cs:
                 cs.execute("""
                     SELECT latitude, longitude, currentSpeed, freeFlowSpeed 
@@ -120,6 +125,8 @@ class HeartOnTheRoadAnalytics:
 
         @classmethod
         def get_trip_details(cls, trip_id):
+            if not isinstance(trip_id, (int, float)) or trip_id <= 0 or trip_id >= 29:
+                raise BadRequest("Invalid trip_id: must be a positive number.")
             with pool.connection() as conn, conn.cursor() as cs:
                 cs.execute("""
                     WITH filtered_trip_id AS (
