@@ -20,7 +20,7 @@ paths:
   /api/analytic:
     get:
       summary: Get analytics data
-      operationId: controller.get_analytic_data
+      operationId: controller.HeartOnTheRoadAnalytics.Analytic.get_analytic_data
       tags:
         - Analytics
       responses:
@@ -60,7 +60,7 @@ paths:
   /api/analytic/relation:
     get:
       summary: Get heart rate and traffic ratio relation
-      operationId: controller.get_analytic_relation
+      operationId: controller.HeartOnTheRoadAnalytics.Analytic.get_analytic_relation
       tags:
         - Analytics
       responses:
@@ -82,7 +82,7 @@ paths:
   /api/trip/{trip_id}:
     get:
       summary: Get trip details
-      operationId: controller.get_trip_details
+      operationId: controller.HeartOnTheRoadAnalytics.Trip.get_trip_details
       tags:
         - Trip
       parameters:
@@ -124,7 +124,7 @@ paths:
   /api/heartrate/trip/{trip_id}:
     get:
       summary: Get heart rate data for a trip
-      operationId: controller.get_heart_rate_trip
+      operationId: controller.HeartOnTheRoadAnalytics.Trip.get_heart_rate_trip
       tags:
         - HeartRate
       parameters:
@@ -152,7 +152,7 @@ paths:
   /api/location/trip/{trip_id}:
     get:
       summary: Get location data for a trip
-      operationId: controller.get_location_trip
+      operationId: controller.HeartOnTheRoadAnalytics.Trip.get_location_trip
       tags:
         - Location
       parameters:
@@ -183,7 +183,7 @@ paths:
   /api/trip:
     get:
       summary: Get number of trips
-      operationId: controller.get_number_of_trips
+      operationId: controller.HeartOnTheRoadAnalytics.Analytic.get_number_of_trips
       tags:
         - Trip
       responses:
@@ -202,7 +202,7 @@ paths:
   /api/traffic/{isTrafficJam}:
     get:
       summary: Get summary statistics for heart rate and traffic by traffic condition
-      operationId: controller.get_traffic_summary
+      operationId: controller.HeartOnTheRoadAnalytics.Traffic.get_traffic_summary
       tags:
         - Traffic
       parameters:
@@ -235,7 +235,7 @@ paths:
   /api/heartrate/traffic/{is_traffic_jam}:
     get:
       summary: Get timestamped heart rate data filtered by traffic condition
-      operationId: controller.get_heartrate_by_traffic
+      operationId: controller.HeartOnTheRoadAnalytics.Traffic.get_heartrate_by_traffic
       tags:
         - HeartRate
       parameters:
@@ -260,14 +260,14 @@ paths:
                     heartrate:
                       type: number
 
-  /api/speed/traffic/{isTrafficJam}:
+  /api/speed/traffic/{is_traffic_jam}:
     get:
       summary: Get current speed data filtered by traffic condition
-      operationId: controller.get_speed_by_traffic
+      operationId: controller.HeartOnTheRoadAnalytics.Traffic.get_speed_by_traffic
       tags:
         - Location
       parameters:
-        - name: isTrafficJam
+        - name: is_traffic_jam
           in: path
           required: true
           schema:
