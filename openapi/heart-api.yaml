@@ -199,14 +199,14 @@ paths:
 
 
 
-  /api/traffic/{isTrafficJam}:
+  /api/traffic/{is_traffic_jam}:
     get:
       summary: Get summary statistics for heart rate and traffic by traffic condition
       operationId: controller.HeartOnTheRoadAnalytics.Traffic.get_traffic_summary
       tags:
         - Traffic
       parameters:
-        - name: isTrafficJam
+        - name: is_traffic_jam
           in: path
           required: true
           schema:
