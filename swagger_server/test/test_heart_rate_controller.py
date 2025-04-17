@@ -74,30 +74,19 @@ class TestHeartRateController(BaseTestCase):
 
         Get timestamped heart rate data filtered by traffic condition
         """
-        # response = self.client.open(
-        #     '/heart/v1/api/heartrate/traffic/{isTrafficJam}'.format(
-        #         isTrafficJam=True),
-        #     method='GET')
         response = self.client.open(
-            '/heart/v1/api/heartrate/traffic/{omg}'.format(
-                omg=True),
+            '/heart/v1/api/heartrate/traffic/{isTrafficJam}'.format(
+                isTrafficJam=True),
             method='GET')
 
-        
-        # response = self.client.open(
-        #     #heart/v1/api/heartrate/traffic/true
-        #     'http://127.0.0.1:8080/heart/v1/api/heartrate/traffic/true',
-        #     method='GET')
+        # print(44444,response.data.decode('utf-8'))
+        self.assert200(response,
+                       'Response body is : ' + response.data.decode('utf-8'))
+        # Parse the JSON response
+        response_json = json.loads(response.data.decode('utf-8'))
 
-
-        print(response.data.decode('utf-8'))
-        # self.assert200(response,
-        #                'Response body is : ' + response.data.decode('utf-8'))
-        # # Parse the JSON response
-        # response_json = json.loads(response.data.decode('utf-8'))
-
-        # # Assert that the response is a non-empty object (trip summary)
-        # self.assertIsInstance(response_json, list)
+        # Assert that the response is a non-empty object (trip summary)
+        self.assertIsInstance(response_json, list)
 
 
 if __name__ == '__main__':
