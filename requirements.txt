@@ -3,3 +3,5 @@ DBUtils
 PyMySQL
 connexion<3.0.0
 cryptography
+flask-testing
+werkzeug
