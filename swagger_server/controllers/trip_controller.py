@@ -1,8 +1,8 @@
 import connexion
 import six
 
-from swagger_server.models.trip_details import InlineResponse2002  # noqa: E501
-from swagger_server.models.inline_response2005 import InlineResponse2005  # noqa: E501
+from swagger_server.models.trip_details import TripDetails  # noqa: E501
+from swagger_server.models.number_of_trip import NumberOfTrip  # noqa: E501
 from swagger_server import util
 
 

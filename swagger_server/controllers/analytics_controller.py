@@ -1,8 +1,8 @@
 import connexion
 import six
 
-from swagger_server.models.analytic_data import InlineResponse200  # noqa: E501
-from swagger_server.models.analytic_relation import InlineResponse2001  # noqa: E501
+from swagger_server.models.analytic_data import AnalyticData  # noqa: E501
+from swagger_server.models.analytic_relation import AnalyticRelation  # noqa: E501
 from swagger_server import util
 
 
