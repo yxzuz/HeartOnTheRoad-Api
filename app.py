@@ -1,3 +1,4 @@
+from swagger_server import encoder
 import sys
 import os
 from flask_cors import CORS
@@ -24,7 +25,6 @@ except ModuleNotFoundError:
           " pip install -r requirements.txt")
     sys.exit(1)
 
-from swagger_server import encoder
 
 def main():
     print('Starting HeartOnTheRoad API...')
@@ -40,10 +40,10 @@ def main():
 if __name__ == '__main__':
     main()
 
-#create stub from
-#https://swagger.io/tools/swagger-editor/
+# create stub from
+# https://swagger.io/tools/swagger-editor/
 
-#python app.py
+# python app.py
 
-#to access document
-#http://127.0.0.1/heart/v1/ui
+# to access document
+# http://127.0.0.1/heart/v1/ui
